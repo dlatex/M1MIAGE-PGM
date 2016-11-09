@@ -1,0 +1,13 @@
+<h2>{{$ctrl.title}}</h2>
+<section class="col-lg-2">
+    <h4>Liste des serveurs UPnP/DLNA</h4>
+    <div class="list-group ">
+        <m1m-browser ng-repeat="server in $ctrl.mediaServers" nh="server" dir="server"></m1m-browser>
+    </div>
+</section>
+
+<section class="col-lg-6">
+    <h4>Liste des lecteurs UPnP/DLNA</h4>
+    <m1m-renderer ng-repeat="renderer in $ctrl.mediaRenderers" nr="renderer"></m1m-renderer>
+</section>
+
