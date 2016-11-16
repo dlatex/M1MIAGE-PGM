@@ -31862,51 +31862,49 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var angular		= __webpack_require__( 8 ),
-	    CommModule          = __webpack_require__( 11 ),
-	    angularMaterial	= __webpack_require__( 61 ),
-	    ngDraggable 	= __webpack_require__( 67 ),
-	    template            = __webpack_require__( 68 ),
-	    media               = __webpack_require__( 69 ),
-	    renderer            = __webpack_require__( 71),
-	    browser             = __webpack_require__( 73)
-	    ;
+	var angular = __webpack_require__(8),
+	        CommModule = __webpack_require__(11),
+	        angularMaterial = __webpack_require__(61),
+	        ngDraggable = __webpack_require__(67),
+	        template = __webpack_require__(68),
+	        media = __webpack_require__(69),
+	        renderer = __webpack_require__(71),
+	        browser = __webpack_require__(73)
+	        ;
 	module.exports = "m1m-multimedia-manager-Module";
 
-	console.log( "Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
+	console.log("Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
 
 	function controller($scope, CommService) {
 	    var ctrl = this;
-	    console.log( "m1mMultimediaManager:", $scope, CommService );
+	    var renderer = null;
+	    console.log("m1mMultimediaManager:", $scope, CommService);
 	    this.mediaRenderers = CommService.mediaRenderers;
-	    this.mediaServers   = CommService.mediaServers;
-	    this.medias         = [];
-	    CommService.onupdate = function() {
+	    this.mediaServers = CommService.mediaServers;
+	    this.medias = [];
+	    CommService.onupdate = function () {
 	        $scope.$applyAsync(); // Mise à jour du rendu
 	    };
-	    this.update= function(){
-	        console.log("Update");
-	        CommService.onupdate();
-	        window.location.reload(true);
+	    this.rendererSwitch = function () {
+	        ctrl.renderer = $scope.model;
 	    }
-	    this.browse = function( mediaServerId, directoryId) {
-	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
-	            console.log( "Browse", mediaServerId, directoryId, "=>", data );
-	            ctrl.directories    = data.directories;
-	            ctrl.medias         = data.medias;
+	    this.browse = function (mediaServerId, directoryId) {
+	        CommService.browse(mediaServerId, directoryId).then(function (data) {
+	            console.log("Browse", mediaServerId, directoryId, "=>", data);
+	            ctrl.directories = data.directories;
+	            ctrl.medias = data.medias;
 	            $scope.$applyAsync();
 	        });
 	    }
 	}
 	controller.$inject = ["$scope", "CommService"];
 
-	angular .module     ( module.exports, [CommModule, angularMaterial, "ngDraggable", media, renderer, browser] )
-	        .component  ( "m1mMultimediaManager", {
-	            controller  : controller,
-	            bindings    : {title: "@"},
-	            template	: template
-	        });
-
+	angular.module(module.exports, [CommModule, angularMaterial, "ngDraggable", media, renderer, browser])
+	        .component("m1mMultimediaManager", {
+	            controller: controller,
+	            bindings: {title: "@"},
+	            template: template
+	        });           
 
 /***/ },
 /* 11 */
@@ -77950,7 +77948,7 @@
 /* 68 */
 /***/ function(module, exports) {
 
-	module.exports = "<h2>{{$ctrl.title}}</h2>\n<section class=\"col-lg-2\">\n    <h4>Liste des serveurs UPnP/DLNA</h4>\n    <div class=\"list-group \">\n        <m1m-browser ng-repeat=\"server in $ctrl.mediaServers\" nh=\"server\" dir=\"server\"></m1m-browser>\n    </div>\n</section>\n\n<section class=\"col-lg-6\">\n    <h4>Liste des lecteurs UPnP/DLNA</h4>\n    <m1m-renderer ng-repeat=\"renderer in $ctrl.mediaRenderers\" nr=\"renderer\"></m1m-renderer>\n</section>\n\n"
+	module.exports = "<h2>{{$ctrl.title}}</h2>\n<section class=\"col-lg-2\">\n    <h4>Liste des serveurs UPnP/DLNA</h4>\n    <div class=\"list-group\">\n        <m1m-browser class=\"list-group\" ng-repeat=\"server in $ctrl.mediaServers\" nh=\"server\" dir=\"server\"></m1m-browser>\n    </div>\n</section>\n\n<section class=\"col-lg-6\">\n    <h4>Liste des lecteurs UPnP/DLNA</h4>\n    <select ng-model=\"model\" ng-change=\"$ctrl.rendererSwitch()\" ng-options='renderer.name for renderer in $ctrl.mediaRenderers'>\n    </select>\n    <m1m-renderer nr=\"$ctrl.renderer\"></m1m-renderer>\n</section>\n\n"
 
 /***/ },
 /* 69 */
@@ -78038,7 +78036,7 @@
 /* 72 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">{{$ctrl.nr.name}}</h3>\n    </div>\n    <div class=\"panel-body\">\n        <div ng-drop=\"true\" ng-drop-success=\"onDropComplete($data,$event)\">\n            <image ng-if=\"!$ctrl.etat\" src=\"images/dropzone.png\" width=\"400\" height=\"350\"/>\n            <image ng-if=\"$ctrl.etat\" src=\"images/media_icon.jpg\" width=\"400\" height=\"350\"/>\n        </div>\n        <div class=\"btn-group btn-default\" style=\"width: 300px; padding-left: 10px\">\n            <a href=\"#\" class=\"btn btn-default\" ng-click=\"$ctrl.play()\"><image src=\"images/play.svg\" ng-click=\"$ctrl.play()\" width=\"40\" height=\"40\"/></a>\n            <a href=\"#\" class=\"btn btn-default\" ng-click=\"$ctrl.pause()\"><image src=\"images/pause.svg\" ng-click=\"$ctrl.pause()\" width=\"40\" height=\"40\"/></a>\n            <a href=\"#\" class=\"btn btn-default\" ng-click=\"$ctrl.stop()\"><image src=\"images/stop.svg\" ng-click=\"$ctrl.stop()\" width=\"40\" height=\"40\"/></a>\n            <md-slider class=\"col-md-offset-9  \"  ng-change=\"$ctrl.setVolume()\" flex=\"\" min=\"0\" max=\"100\" ng-model=\"volume\" aria-label=\"volume\" id=\"volume-slider\" md-horizontal md-range></md-slider>\n\n        </div>\n    </div>\n</div>"
+	module.exports = "<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">{{$ctrl.nr.name}}</h3>\n    </div>\n    <div class=\"panel-body\">\n        <div ng-drop=\"true\" ng-drop-success=\"onDropComplete($data,$event)\">\n            <image ng-if=\"!$ctrl.etat\" src=\"images/dropzone.png\" width=\"400\" height=\"350\"/>\n            <image ng-if=\"$ctrl.etat\" src=\"images/media_icon.jpg\" width=\"400\" height=\"350\"/>\n        </div>\n        <div class=\"btn-group btn-default\" style=\"width: 300px; padding-left: 10px\">\n            <a href=\"#\" class=\"btn btn-default\" ng-click=\"$ctrl.play()\"><image src=\"images/play.svg\" ng-click=\"$ctrl.play()\" width=\"40\" height=\"40\"/></a>\n            <a href=\"#\" class=\"btn btn-default\" ng-click=\"$ctrl.pause()\"><image src=\"images/pause.svg\" ng-click=\"$ctrl.pause()\" width=\"40\" height=\"40\"/></a>\n            <a href=\"#\" class=\"btn btn-default\" ng-click=\"$ctrl.stop()\"><image src=\"images/stop.svg\" ng-click=\"$ctrl.stop()\" width=\"40\" height=\"40\"/></a>\n            <md-slider class=\"col-md-offset-9  \"  ng-change=\"$ctrl.setVolume()\" flex=\"\" min=\"0\" max=\"100\" ng-model=\"volume\" aria-label=\"volume\" id=\"volume-slider\" md-horizontal md-range></md-slider>\n        </div>\n    </div>\n</div>"
 
 /***/ },
 /* 73 */
@@ -78051,16 +78049,17 @@
 
 	function controller($scope, CommService) {
 	    var ctrl = this;
-	    var browsed = false;
+	    var browsed=false;
 	    console.log("m1m-browser-log", $scope);
 	    this.browse = function (mediaServerId, directoryId) {
 	        CommService.browse(mediaServerId, directoryId).then(function (data) {
 	            console.log("Browse", mediaServerId, directoryId, "=>", data);
+	            console.log("Path =>", data);
 	            ctrl.directories = data.directories;
 	            ctrl.medias = data.medias;
 	            ctrl.path = data.name;
+	            ctrl.browsed=!ctrl.browsed;
 	            $scope.$applyAsync();
-	            ctrl.browsed = !ctrl.browsed;
 	        });
 	    }
 	}
@@ -78079,7 +78078,7 @@
 /* 74 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"list-group-item\">\n    <p ng-click=\"$ctrl.browse($ctrl.nh.id,$ctrl.dir.directory)\"><image src=\"images/UPnP.png\" width=\"20\" height=\"20\" />{{$ctrl.dir.name}}</p>\n    <div>\n        <m1m-browser ng-if=\"$ctrl.browsed\" class=\"list-group-item\" ng-repeat=\"obj in $ctrl.directories\" nh=\"$ctrl.nh\" dir=\"obj\"></m1m-browser>\n        <m1m-media ng-repeat=\"media in $ctrl.medias\" nf=\"media\"></m1m-media>\n    </div>\n</div>\n"
+	module.exports = "<div class=\"list-group-item\">\n    <p ng-click=\"$ctrl.browse($ctrl.nh.id, $ctrl.dir.directory)\"><image src=\"images/UPnP.png\" width=\"20\" height=\"20\" />{{$ctrl.dir.name}}</p>\n    <m1m-browser ng-if=\"$ctrl.browsed\" ng-repeat=\"obj in $ctrl.directories\" nh=\"$ctrl.nh\" dir=\"obj\"></m1m-browser>\n    <m1m-media ng-repeat=\"media in $ctrl.medias\" nf=\"media\"></m1m-media>\n</div>"
 
 /***/ }
 /******/ ]);

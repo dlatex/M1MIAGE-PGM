@@ -1,7 +1,5 @@
 <div class="list-group-item">
-    <p ng-click="$ctrl.browse($ctrl.nh.id,$ctrl.dir.directory)"><image src="images/UPnP.png" width="20" height="20" />{{$ctrl.dir.name}}</p>
-    <div>
-        <m1m-browser ng-if="$ctrl.browsed" class="list-group-item" ng-repeat="obj in $ctrl.directories" nh="$ctrl.nh" dir="obj"></m1m-browser>
-        <m1m-media ng-repeat="media in $ctrl.medias" nf="media"></m1m-media>
-    </div>
+    <p ng-click="$ctrl.browse($ctrl.nh.id, $ctrl.dir.directory)"><image src="images/UPnP.png" width="20" height="20" />{{$ctrl.dir.name}}</p>
+    <m1m-browser ng-if="$ctrl.browsed" ng-repeat="obj in $ctrl.directories" nh="$ctrl.nh" dir="obj"></m1m-browser>
+    <m1m-media ng-repeat="media in $ctrl.medias" nf="media"></m1m-media>
 </div>

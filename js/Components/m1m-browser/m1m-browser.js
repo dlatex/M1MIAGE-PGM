@@ -5,16 +5,17 @@ module.exports = "m1m-browser-Module";
 
 function controller($scope, CommService) {
     var ctrl = this;
-    var browsed = false;
+    var browsed=false;
     console.log("m1m-browser-log", $scope);
     this.browse = function (mediaServerId, directoryId) {
         CommService.browse(mediaServerId, directoryId).then(function (data) {
             console.log("Browse", mediaServerId, directoryId, "=>", data);
+            console.log("Path =>", data);
             ctrl.directories = data.directories;
             ctrl.medias = data.medias;
             ctrl.path = data.name;
+            ctrl.browsed=!ctrl.browsed;
             $scope.$applyAsync();
-            ctrl.browsed = !ctrl.browsed;
         });
     }
 }
